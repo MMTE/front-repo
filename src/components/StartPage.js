@@ -14,7 +14,7 @@ const StartPage = () => {
 
   const handleLogin = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('https://delyar.darkube.app/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const StartPage = () => {
 
   const handleSignup = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch('https://delyar.darkube.app/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
