@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './ChatPage.css';
 
-const API_URL = 'http://delyar-back.genx-delyar.svc:5000' || 'http://127.0.0.1:5000';
+const API_URL = 'https://delyar.darkube.app' || 'http://127.0.0.1:5000';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
