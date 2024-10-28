@@ -1,8 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 import './ChatPage.css';
 
 const API_URL = 'https://delyar-back.darkube.app';
+
+const MessageBubble = ({ content, sender }) => {
+  return (
+    <div 
+      className={`message-bubble ${sender}`}
+      style={{ 
+        fontFamily: 'Vazirmatn', 
+        textAlign: 'right', 
+        direction: 'rtl'
+      }}
+    >
+      <ReactMarkdown
+        components={{
+          p: ({ node, ...props }) => (
+            <p style={{ margin: '0.5em 0' }} {...props} />
+          ),
+          strong: ({ node, ...props }) => (
+            <strong style={{ fontWeight: 'bold' }} {...props} />
+          ),
+          em: ({ node, ...props }) => (
+            <em style={{ fontStyle: 'italic' }} {...props} />
+          ),
+          br: () => <br />,
+          // Add more custom components as needed
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+};
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -53,8 +85,6 @@ const ChatPage = () => {
     }
   };
 
-
-
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -62,18 +92,19 @@ const ChatPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
     <div className="chat-page">
       <div className="chat-container">
         <div className="chat-box" ref={chatBoxRef}>
           {messages.map((msg, index) => (
             <div key={index} className={`message-container ${msg.sender}-container`}>
-              <div 
-                className={`message-bubble ${msg.sender}`}
-                style={{ fontFamily: 'Vazirmatn', textAlign: 'right', direction: 'rtl' }}
-              >
-                {msg.content}
-              </div>
+              <MessageBubble content={msg.content} sender={msg.sender} />
             </div>
           ))}
           <div ref={messagesEndRef} />
@@ -93,5 +124,6 @@ const ChatPage = () => {
     </div>
   );
 };
+
 
 export default ChatPage;
