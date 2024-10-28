@@ -62,11 +62,29 @@ const ChatPage = () => {
     createSession();
   }, []);
 
+  const streamBotResponse = (botResponse) => {
+    let index = -1;
+    const streamInterval = setInterval(() => {
+      if (index < botResponse.length-1) {
+        setMessages((prevMessages) => [
+          ...prevMessages.slice(0, -1),
+          {
+            sender: 'bot',
+            content: prevMessages[prevMessages.length - 1].content + botResponse[index]
+          }
+        ]);
+        index += 1;
+      } else {
+        clearInterval(streamInterval);
+      }
+    }, 25); // Adjust delay (in ms) as desired for typing effect
+  };
+
   const sendMessage = async () => {
     if (!userInput.trim() || !sessionId) return;
 
     const newMessages = [...messages, { sender: 'user', content: userInput.trim() }];
-    setMessages(newMessages);
+    setMessages([...newMessages, { sender: 'bot', content: '' }]); // Add empty bot message to show streaming
     setUserInput('');
 
     try {
@@ -78,8 +96,7 @@ const ChatPage = () => {
         username: userData.username || null
       });
       
-      const botResponse = response.data.content;
-      setMessages([...newMessages, { sender: 'bot', content: botResponse }]);
+      streamBotResponse(response.data.content); // Stream bot response
     } catch (error) {
       console.error('Error sending message:', error);
     }
