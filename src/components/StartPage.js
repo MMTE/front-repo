@@ -9,9 +9,16 @@ const StartPage = () => {
   const [error, setError] = useState('');
   
   const handleChatClick = () => {
-    navigate('/chat');
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      navigate('/chat');
+    } else {
+      setIsModalOpen(true);
+      setError('لطفا برای ادامه وارد شوید یا ثبت نام کنید');
+    }
   };
 
+  
   const handleLogin = async (userData) => {
     try {
       const response = await fetch('https://delyar-back.darkube.app/api/login', {
@@ -26,7 +33,8 @@ const StartPage = () => {
       
       if (response.ok) {
         localStorage.setItem('userData', JSON.stringify(data.user));
-        setError(''); // Clear any existing errors
+        setError('');
+        navigate('/chat'); // Automatically redirect to chat after successful login
         return true;
       }
       setError(data.error || 'Login failed');
@@ -37,7 +45,7 @@ const StartPage = () => {
       return false;
     }
   };
-
+  
   const handleSignup = async (userData) => {
     try {
       const response = await fetch('https://delyar-back.darkube.app/api/signup', {
@@ -52,7 +60,8 @@ const StartPage = () => {
       
       if (response.ok) {
         localStorage.setItem('userData', JSON.stringify(data.user));
-        setError(''); // Clear any existing errors
+        setError('');
+        navigate('/chat'); // Automatically redirect to chat after successful signup
         return true;
       }
       setError(data.error || 'Signup failed');

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { useNavigate } from 'react-router-dom';
 import './ChatPage.css';
 
 const API_URL = 'https://delyar-back.darkube.app';
@@ -37,6 +38,7 @@ const MessageBubble = ({ content, sender }) => {
 };
 
 const ChatPage = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [sessionId, setSessionId] = useState(null);
@@ -45,6 +47,13 @@ const ChatPage = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    // Check authentication on component mount
+    const userData = localStorage.getItem('userData');
+    if (!userData) {
+      navigate('/');
+      return;
+    }
+
     const createSession = async () => {
       try {
         const userData = JSON.parse(localStorage.getItem('userData') || '{}');
@@ -57,10 +66,17 @@ const ChatPage = () => {
         setSessionId(response.data.id);
       } catch (error) {
         console.error('Error creating session:', error);
+        // If session creation fails, redirect to start page
+        navigate('/');
       }
     };
     createSession();
-  }, []);
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userData');
+    navigate('/');
+  };
 
   const streamBotResponse = (botResponse) => {
     let index = -1;
@@ -117,6 +133,25 @@ const ChatPage = () => {
 
   return (
     <div className="chat-page">
+      <div className="chat-header">
+        <button 
+          onClick={handleLogout}
+          className="logout-button"
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            left: '1rem',
+            padding: '0.5rem 1rem',
+            backgroundColor: '#9ecedb',
+            border: 'none',
+            borderRadius: '20px',
+            cursor: 'pointer',
+            fontFamily: 'Vazirmatn'
+          }}
+        >
+          خروج
+        </button>
+      </div>
       <div className="chat-container">
         <div className="chat-box" ref={chatBoxRef}>
           {messages.map((msg, index) => (
