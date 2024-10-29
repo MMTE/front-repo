@@ -6,8 +6,8 @@ WORKDIR /app
 
 # Copy the package files and install dependencies
 COPY package*.json ./
-RUN npm install react-markdown && \
-    npm install
+RUN npm install
+RUN npm install serve -g
 
 # Copy the rest of the application source code
 COPY . .
@@ -22,4 +22,4 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["npm", "start"]
+CMD ["serve", "build -s"]
