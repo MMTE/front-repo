@@ -24,4 +24,5 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["serve", "build -s"]
+#CMD ["serve", "build -s"]
+ENTRYPOINT ["serve", "-s", "build"]
