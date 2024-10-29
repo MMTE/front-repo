@@ -6,7 +6,9 @@ WORKDIR /app
 
 # Copy the package files and install dependencies
 COPY package*.json ./
-RUN npm install
+
+RUN npm install react-markdown && \
+    npm install
 RUN npm install serve -g
 
 # Copy the rest of the application source code
